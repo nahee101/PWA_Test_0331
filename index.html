@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+
+    <title>부산 관광 안내</title>
+</head>
+<body>
+    <div id = "app">
+        <v-app>
+            <!--앱바-->
+            <v-app-bar app color = "primary" dark>
+                <v-app-bar-nav-icon @click = "ndrawer = true"></v-app-bar-nav-icon>
+                <v-toolbar-title>부산 관광 안내</v-toolbar-title>
+            </v-app-bar>
+
+            <!--네비게이션 서랍-->
+            <v-navigation-drawer v-model = "ndrawer" absolute temporary>
+                <!--사용자 정보-->
+                <v-toolbar flat height = "70px">
+                    <v-list>
+                        <v-list-item>
+                            <v-list-item-avatar
+                                color = "primary">
+                            </v-list-item-avatar>
+
+                            <v-list-item-content>
+                                <v-list-item-title>
+                                    즐거운 부산
+                                </v-list-item-title>
+
+                                <v-list-item-subtitle>
+                                    다이나믹 부산
+                                </v-list-item-subtitle>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-list>
+                </v-toolbar>
+                <v-divider></v-divider>
+
+                <!--메뉴리스트-->
+                <v-list>
+                    <v-list-item @click = ""
+                        v-for = "item in gnbList" :key = "gnbList.gnb" :href = "item.link">
+                        <v-list-item-action>
+                            <v-icon>{{item.icon}}</v-icon>
+                        </v-list-item-action>
+
+                        <v-list-item-content>
+                            <v-list-item-title>
+                                {{item.gnb}}
+                            </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                </v-list>
+            </v-navigation-drawer>
+
+            <!--본문-->
+            <v-main>
+                <v-container>
+
+                    <v-card flat>
+                        <v-card-title>
+                            현재 인기 있는 곳입니다
+                        </v-card-title>
+                        <v-card-subtitle>
+                            추천을 통해 인기 있는 곳을 골라주세요
+                        </v-card-subtitle>
+                    </v-card>
+
+                    <v-row>
+                        <!--
+                            xs: 항상 가로로 배치
+                            sm: 768px 이하에서 세로로 배치
+                        -->
+                        <v-col cols = "12" sm = "6"
+                            v-for = "item in tourList" :key = "tourList.title">
+                            <v-card>
+                                <v-img :src = "item.src" aspect-ratio = "2.3"></v-img>
+                                <v-card-title>
+                                    {{item.title}}
+                                </v-card-title>
+                                <v-divider></v-divider>
+                                <!--추천 버튼, 추천 횟수-->
+                                <h3>{{item.count}}</h3>
+                                <v-spacer></v-spacer>
+                                <v-btn @click = "item.count += 1" color = "success">추천</v-btn>
+
+                                <v-card>
+                                    <v-slide-x-transition group>
+                                            <v-list-item v-for = "n in item.count" :key = "n">
+                                                <v-list-item-content>
+                                                    <v-list-item-title>{{item.title}}을 추천합니다</v-list-item-title>
+                                                </v-list-item-content>
+                                            </v-list-item>
+                                    </v-slide-x-transition>
+                                </v-card>
+
+                            </v-card>
+                        </v-col>
+                    </v-row>
+                    
+                    <!--추천 내역-->
+                    <v-card>
+                        <v-slide-x-transition group>
+                                <v-list-item v-for = "(r, index) in recommendList" :key = "index">
+                                    <v-list-item-content>
+                                        <v-list-item-title>{{r}}을/를 추천합니다!</v-list-item-title>
+                                    </v-list-item-content>
+                                </v-list-item>
+                        </v-slide-x-transition>
+    
+                    </v-card>
+
+
+                </v-container>
+            </v-main>
+        </v-app>
+    </div>
+
+    <script>
+
+        new Vue({
+            el: "#app",
+            vuetify: new Vuetify(),
+            data: {
+                ndrawer: false,
+                gnbList: [
+                    {gnb: '메인페이지', icon: 'explore', link: '#'},
+                    {gnb: '관광지 소개', icon: 'map', link: '#'},
+                    {gnb: '추천 명소', icon: 'tour', link: '#'}
+                ],
+                tourList: [
+                    {title: '해운대', src: 'https://cdn.pixabay.com/photo/2019/08/25/08/44/haeundae-beach-4428975__340.jpg', count: 0},
+                    {title: '바다 도시 야경', src: 'https://cdn.pixabay.com/photo/2017/06/07/12/24/building-2380214__340.jpg', count: 0},
+                    {title: '광안대교', src: 'https://cdn.pixabay.com/photo/2021/02/07/18/38/bridge-5992303__340.jpg', count: 0},
+                    {title: '해운대 인어동상', src: 'https://cdn.pixabay.com/photo/2018/11/26/08/21/mermaid-3838966__340.jpg', count: 0},
+                ],
+                recommendList: []
+            },
+            methods: {
+                recommend: function(i) {
+                    this.recommendList.push(this.tourList[i].title);
+                }
+            }
+        })
+    </script>
+</body>
+</html>
